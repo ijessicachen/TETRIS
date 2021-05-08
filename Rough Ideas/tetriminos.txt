@@ -1,0 +1,17 @@
+BUILDING
+Rotation
+  • Probably best to fake it, as in you move the cells to the rotated look when you press the key? More on that later wait ooo you can make a list with the x and y related coordinates and then move to the previous or next coordinates based on the arrow keys
+  • How each shape rotates •
+    #Square
+    No rotate buddyyyy
+    # T
+    Rotates aroudn the top middle cell, the one that touches all three other cells.
+    #L1 (proper L, orange)
+    middle cell of the long leg, reminiscent of the one purple rotates around.
+    #L2 (right L, blue)
+    Same as the orange cell, middle cell of the long leg.
+    #Z1 (green, s way)
+Moving (left, right, soft drop, hard drop)
+  • Thank EVERYTHING that moving laterally or vertically is pretty easy compared to other stuff
+  • 
+COLOUR
