@@ -11,6 +11,7 @@ Rotation
     #L2 (right L, blue)
     Same as the orange cell, middle cell of the long leg.
     #Z1 (green, s way)
+  https://static.packt-cdn.com/products/9781849690904/graphics/0904_06_03.jpg <-- interesting version someone created you can get ideas off of
 Moving (left, right, soft drop, hard drop)
   • Thank EVERYTHING that moving laterally or vertically is pretty easy compared to other stuff
   • 
