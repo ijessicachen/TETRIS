@@ -12,7 +12,7 @@ tColours = (16, 228, 23, 210, 12, 11, 59)
 
 
 # Paint the tetrimino for the given mino variable and mino type.
-def paint_mino(stdscr, mino, type, erase=False):
+def paint_mino(stdscr, mino, type, key, erase=False):
 
     i = tShapes.index(type)
     c = tColours[i]
@@ -22,7 +22,11 @@ def paint_mino(stdscr, mino, type, erase=False):
     unit_ch = ' ' if erase else ch
 
     for unit in mino:
-        stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
+        if erase == False:
+          stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
+        else:
+          if key == chr(32):
+            stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
 
 # calculate the new yxs for the given mino, type and action.
 def calc_mino_yxs(mino, type, action, key):
@@ -33,6 +37,7 @@ def calc_mino_yxs(mino, type, action, key):
 
     # work on the action: move down.
     for unit in mino:
+      
       """
       if key == chr(25):
         new_mino.append([unit[0] + 2, unit[1]]);
@@ -42,9 +47,14 @@ def calc_mino_yxs(mino, type, action, key):
         new_mino.append([unit[0] + 1, unit[1]]);
       """
       #if key == chr(-1):
-      new_mino.append([unit[0] + 1, unit[1]])
+      #if key == chr(32):
+        #new_mino.append([unit[0]+(out-unit[0]-1), unit[1]])
+      #else:
+      if key == chr(32):
+        new_mino.append([unit[0] + 1, unit[1]])
       maxY = unit[0] if unit[0] >= maxY else maxY
       out = (maxY + 1) >= 15
+
 
     return (new_mino, out)
 
@@ -56,25 +66,25 @@ def init_mino_yxs(type):
 
     if index == 0:
         # O
-        return [ [2, 2], [2, 4], [3, 2], [3, 4] ]
+        return [ [2, 12], [2, 14], [3, 12], [3, 14] ]
     elif index == 1:
         # I
-        return [ [3, 10], [3, 12], [3, 14], [3, 16] ]
+        return [ [3, 20], [3, 22], [3, 24], [3, 26] ]
     elif index == 2:
         # L
-        return [ [3, 22], [3, 24], [3, 26], [2, 26] ]
+        return [ [3, 32], [3, 34], [3, 36], [2, 36] ]
     elif index == 3:
         # J
-        return [ [2, 32], [3, 32], [3, 34], [3, 36] ]
+        return [ [2, 42], [3, 42], [3, 44], [3, 46] ]
     elif index == 4:
         # Z
-        return [ [2, 42], [2, 44], [3, 44], [3, 46] ]
+        return [ [2, 52], [2, 54], [3, 54], [3, 56] ]
     elif index == 5:
         # S
-        return [ [3, 52], [3, 54], [2, 54], [2, 56] ]
+        return [ [3, 62], [3, 64], [2, 64], [2, 66] ]
     else:
         # T
-        return [ [3, 62], [3, 64], [2, 64], [3, 66] ]
+        return [ [3, 72], [3, 74], [2, 74], [3, 76] ]
 
 def init_colours(bg = -1):
   #Setting up colours
@@ -98,8 +108,8 @@ def tetris(stdscr):
   init_colours(bg)
   
   #floor
-  for i in range(0, 68, 2):
-    stdscr.addstr(15, 1+i, chr(9609), curses.color_pair(245))
+  for i in range(0, 78, 2):
+    stdscr.addstr(15, 3+i, chr(9609), curses.color_pair(245))
   stdscr.getch()
 
   #tetrominoes
@@ -110,7 +120,7 @@ def tetris(stdscr):
     colour = tColours[index]
     mino = init_mino_yxs(t)
     tetrominoes.append(mino)
-    paint_mino(stdscr, mino, t)
+    paint_mino(stdscr, mino, t, 0)
 
   # loop for movement
   while True:
@@ -128,14 +138,14 @@ def tetris(stdscr):
         #new coordinates for tetrominoes
         new_yxs, out = calc_mino_yxs(mino, type, 'MOVE_DOWN', key)
         #erase the current tetrominoes
-        paint_mino(stdscr, mino, type, erase = True)
+        paint_mino(stdscr, mino, type, key, erase = True)
 
         #check if they broke the floor
         if out:
           new_yxs = init_mino_yxs(type)
 
         #The new tetromino
-        paint_mino(stdscr, new_yxs, type)
+        paint_mino(stdscr, new_yxs, type, key)
         #reset the new tetromino list
         tetrominoes[index] = new_yxs
 
