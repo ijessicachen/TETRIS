@@ -15,4 +15,8 @@ Rotation
 Moving (left, right, soft drop, hard drop)
   • Thank EVERYTHING that moving laterally or vertically is pretty easy compared to other stuff
   • 
+**** Just throwing this out here for now, will 
+need to expand on it but you will also need a way
+to speed up and instant drop. Also making sure the pieces fit together
+**** Once things start falling properly you can focus on clearing things and then actual things to make it like a game
 COLOUR
