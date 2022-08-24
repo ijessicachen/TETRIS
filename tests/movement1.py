@@ -1,15 +1,9 @@
-"""
-literally fix this ddarned it
-just make them drop down 
-
-"""
-
 import curses
 
 #tetrinominos
 ch = chr(9609)
 tShapes = ('O', 'I', 'L', 'J', 'Z', 'S', 'T')
-tColours = (16, 228, 23, 210, 12, 11, 59)
+tColours = (15, 228, 28, 210, 11, 2, 64)
 
 
 # Paint the tetrimino for the given mino variable and mino type.
@@ -26,36 +20,40 @@ def paint_mino(stdscr, mino, type, key, erase=False):
         if erase == False:
           stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
         else:
-          if key == chr(32):
-            stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
+            # don't know why this is here, will remove it          if key == chr(32):
+          stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
 
 # calculate the new yxs for the given mino, type and action.
 def calc_mino_yxs(mino, type, action, key):
 
     new_mino = []
     maxY = 0
-    out = False
+    out = False #as in if it's through the floor
 
     # work on the action: move down.
     for unit in mino:
-      
-      """
-      if key == chr(25):
-        new_mino.append([unit[0] + 2, unit[1]]);
-      elif key == chr(32):
-        new_mino.append([unit[0] - 1, unit[1]]);
-      elif key == chr(-1):
-        new_mino.append([unit[0] + 1, unit[1]]);
-      """
-      #if key == chr(-1):
-      #if key == chr(32):
-        #new_mino.append([unit[0]+(out-unit[0]-1), unit[1]])
-      #else:
-      if key == chr(32):
-        new_mino.append([unit[0] + 1, unit[1]])
-      maxY = unit[0] if unit[0] >= maxY else maxY
-      out = (maxY + 1) >= 15
-
+        new_mino.append([unit[0]+1, unit[1]])
+           
+        #clearly none of the below is working so I'll just 
+        #rework this part
+        """
+        if key == chr(25):
+          new_mino.append([unit[0] + 2, unit[1]]);
+        elif key == chr(32):
+          new_mino.append([unit[0] - 1, unit[1]]);
+        elif key == chr(-1):
+          new_mino.append([unit[0] + 1, unit[1]]);
+        """
+        #if key == chr(-1):
+        #if key == chr(32):
+          #new_mino.append([unit[0]+(out-unit[0]-1), unit[1]])
+        #else:
+        """
+        if key == chr(32):
+          new_mino.append([unit[0] + 1, unit[1]])
+        maxY = unit[0] if unit[0] >= maxY else maxY
+        out = (maxY + 1) >= 15
+        """
 
     return (new_mino, out)
 
@@ -91,11 +89,28 @@ def init_colours(bg = -1):
   #Setting up colours
   curses.start_color()
   curses.use_default_colors()
-  #initializing
+
+  """
+   I'm guessing the if statement is to avoid messing it
+   up like I did in the blocks.py. However, considering
+   how it's kind of weirdly complicated, perhaps this 
+   version is the wrong version. Even if that's the case,
+   until I figure out what's right I will keep it this way
+   since my other games use this colour set with these
+   numbers.
+  """ 
   for i in range(0, curses.COLORS):
-    curses.init_pair(i+1, i-1, -1)
+      #inialize colour pair
+      if i == 15:
+          curses.init_pair(i+1, i, 1)
+      elif i == 16:
+          curses.init_pair(i+1, i, 196)
+      else:
+          curses.init_pair(i+1, i, -1)
 
-
+"""
+FIND OUT WHERE type (the variable) IS COMING FROM
+"""
 def tetris(stdscr):
   #bye bye cursor
   curses.curs_set(0)
@@ -109,20 +124,23 @@ def tetris(stdscr):
   init_colours(bg)
   
   #floor
-  for i in range(0, 78, 2):
-    stdscr.addstr(15, 3+i, chr(9609), curses.color_pair(245))
+  for i in range(0, 78):
+    stdscr.addch(15, 3+i, curses.ACS_HLINE, curses.color_pair(245))
   stdscr.getch()
 
   #tetrominoes
   tetrominoes = []
   #initial positions
-  for t in tShapes:
+  for t in tShapes: #list in the beginning naming types of tetr…
     index = tShapes.index(t)
     colour = tColours[index]
     mino = init_mino_yxs(t)
     tetrominoes.append(mino)
     paint_mino(stdscr, mino, t, 0)
 
+  # I think the logic looks great, I just don't understand it, so 
+  #it's time to just go line by line to try and figure out what's
+  #going on
   # loop for movement
   while True:
     key = stdscr.getch()
@@ -130,24 +148,32 @@ def tetris(stdscr):
     if key == ord('q'):
       break
     else:
-    # Any other key will move all tetrominoes one unit down
+    # all tetronimos will move one unit down
+      #new coordinates for tetrominoes
+      new_yxs, out = calc_mino_yxs(mino, type, 'MOVE_DOWN', key)
+      #erase the current tetrominoes
+      paint_mino(stdscr, mino, type, key, erase = True)
+   
+
+    """
       for mino in tetrominoes:
         index = tetrominoes.index(mino)
         colour = tColours[index]
         type = tShapes[index]
 
         #new coordinates for tetrominoes
-        new_yxs, out = calc_mino_yxs(mino, type, 'MOVE_DOWN', key)
+        #new_yxs, out = calc_mino_yxs(mino, type, 'MOVE_DOWN', key)
         #erase the current tetrominoes
         paint_mino(stdscr, mino, type, key, erase = True)
 
         #check if they broke the floor
-        if out:
-          new_yxs = init_mino_yxs(type)
+        #if out:
+        #  new_yxs = init_mino_yxs(type)
 
         #The new tetromino
-        paint_mino(stdscr, new_yxs, type, key)
+        #paint_mino(stdscr, new_yxs, type, key)
         #reset the new tetromino list
-        tetrominoes[index] = new_yxs
+        #tetrominoes[index] = new_yxs
+        """
 
 curses.wrapper(tetris)
