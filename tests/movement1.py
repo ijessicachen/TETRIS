@@ -131,8 +131,8 @@ def tetris(stdscr):
   init_colours(bg)
   
   #floor
-  for i in range(0, 78):
-    stdscr.addch(15, 3+i, curses.ACS_HLINE, curses.color_pair(245))
+  for i in range(0, 75):
+    stdscr.addch(15, 7+i, curses.ACS_HLINE, curses.color_pair(245))
   stdscr.getch()
 
   #tetrominoes
@@ -167,8 +167,8 @@ def tetris(stdscr):
                 #erase current
                 paint_mino(stdscr, mino, x, key, erase = True)
                 #redraw floor
-                for i in range(0, 78):
-                    stdscr.addch(15, 3+i, curses.ACS_HLINE, curses.color_pair(245))
+                for i in range(0, 75):
+                    stdscr.addch(15, 7+i, curses.ACS_HLINE, curses.color_pair(245))
                 #paint at top, annoying to read because I'm modelling
                 #the original initialization with different vars
                 og = init_mino_yxs(tShapes[tetrominoes.index(mino)])
