@@ -1,30 +1,40 @@
+"""
+ TO-DO
+    • slow accel and fast accel
+ the end goal of this is to move the normal, slow accel,
+ and fast accel blocks.
+"""
+
 import curses
 
 #tetrinominos
 ch = chr(9609)
-tShapes = ('O', 'I', 'L', 'J', 'Z', 'S', 'T')
-tColours = (15, 228, 28, 210, 11, 2, 64)
+tShapes = ['O', 'I', 'L', 'J', 'Z', 'S', 'T']
+tColours = [15, 228, 28, 210, 11, 2, 64]
 
 
 # Paint the tetrimino for the given mino variable and mino type.
-def paint_mino(stdscr, mino, type, key, erase=False):
+"""
+ WILL LIKELY EVENTUALLY HAVE TO SPECIALIZE BASED ON TYPE OF 
+ MOVEMENT
+"""
+def paint_mino(stdscr, mino, shape, key, erase=False):
 
-    i = tShapes.index(type)
-    c = tColours[i]
+    c = tColours[shape]
 
     # using the python ternary operator to decide
     # what character to use for painting each unit.
     unit_ch = ' ' if erase else ch
 
     for unit in mino:
-        if erase == False:
+        if erase:
           stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
         else:
-            # don't know why this is here, will remove it          if key == chr(32):
-          stdscr.addstr(unit[0], unit[1], unit_ch, curses.color_pair(c))
+          stdscr.addstr(unit[0]+1, unit[1], unit_ch, curses.color_pair(c))
+          unit[0] += 1 #then change the actual value of the mino unit
 
 # calculate the new yxs for the given mino, type and action.
-def calc_mino_yxs(mino, type, action, key):
+def calc_mino_yxs(mino, shape, action, key):
 
     new_mino = []
     maxY = 0
@@ -58,10 +68,10 @@ def calc_mino_yxs(mino, type, action, key):
     return (new_mino, out)
 
 # Initialize all units for all tetrominoes.
-def init_mino_yxs(type):
+def init_mino_yxs(shape):
 
     # get the index of the given type.
-    index = tShapes.index(type)
+    index = tShapes.index(shape)
 
     if index == 0:
         # O
@@ -108,9 +118,6 @@ def init_colours(bg = -1):
       else:
           curses.init_pair(i+1, i, -1)
 
-"""
-FIND OUT WHERE type (the variable) IS COMING FROM
-"""
 def tetris(stdscr):
   #bye bye cursor
   curses.curs_set(0)
@@ -136,24 +143,43 @@ def tetris(stdscr):
     colour = tColours[index]
     mino = init_mino_yxs(t)
     tetrominoes.append(mino)
-    paint_mino(stdscr, mino, t, 0)
+    paint_mino(stdscr, mino, tShapes.index(t), 0, erase = False)
 
-  # I think the logic looks great, I just don't understand it, so 
-  #it's time to just go line by line to try and figure out what's
-  #going on
   # loop for movement
   while True:
     key = stdscr.getch()
 
-    if key == ord('q'):
+    if key == ord('q') or key == 27:
       break
     else:
-    # all tetronimos will move one unit down
-      #new coordinates for tetrominoes
-      new_yxs, out = calc_mino_yxs(mino, type, 'MOVE_DOWN', key)
-      #erase the current tetrominoes
-      paint_mino(stdscr, mino, type, key, erase = True)
-   
+      x = 0 #index of tetromino that the mino is
+      # move them down normal speed 
+      for mino in tetrominoes:
+        # new coordinates for tetrominoes
+        #erase the current tetrominoes
+        paint_mino(stdscr, mino, x, key, erase = True)
+        #new_yxs, out = calc_mino_yxs(mino, shape, 'MOVE_DOWNx1', key)
+        paint_mino(stdscr, mino, x, key, erase = False)
+
+        # check if broke floor, and put to top if yes
+        for unit in mino:
+            if unit[0] == 15:
+                #erase current
+                paint_mino(stdscr, mino, x, key, erase = True)
+                #redraw floor
+                for i in range(0, 78):
+                    stdscr.addch(15, 3+i, curses.ACS_HLINE, curses.color_pair(245))
+                #paint at top, annoying to read because I'm modelling
+                #the original initialization with different vars
+                og = init_mino_yxs(tShapes[tetrominoes.index(mino)])
+                paint_mino(stdscr, og, tetrominoes.index(mino), 0, erase = False)
+                tetrominoes[tetrominoes.index(mino)] = og
+                #leave because you only need to paint once for each mino
+                #might not be necessary because mino values change but 
+                #will solve later
+                break;
+        x += 1
+
 
     """
       for mino in tetrominoes:
@@ -169,8 +195,6 @@ def tetris(stdscr):
         #check if they broke the floor
         #if out:
         #  new_yxs = init_mino_yxs(type)
-
-        #The new tetromino
         #paint_mino(stdscr, new_yxs, type, key)
         #reset the new tetromino list
         #tetrominoes[index] = new_yxs
