@@ -149,8 +149,8 @@ def tetris(stdscr):
   init_colours(bg)
   
   #floor
-  for i in range(0, 78):
-    stdscr.addch(15, 3+i, curses.ACS_HLINE, curses.color_pair(245))
+  for i in range(0, 75):
+    stdscr.addch(15, 7+i, curses.ACS_HLINE, curses.color_pair(245))
   stdscr.getch()
 
   #tetrominoes
