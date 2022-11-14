@@ -2,8 +2,8 @@
  TO-DO
     • soft drop
     • hard drop trail
- the end goal of this is normal, soft, and 
- hard drop
+ the end goal of this particular program
+ is achieving normal, soft, and hard drop
 """
 
 import curses
@@ -166,14 +166,24 @@ def tetris(stdscr):
   # loop for movement
   while True:
     key = stdscr.getch()
+    '''
+    alright, I think the problem is that the above statment kind of 
+    sets the "frames" for movement, and they are the normal speed 
+    when no key is pressed, but when something is pressed, then 
+    it will always speed up. Find a way to change that so that key
+    press will not speed it up.
+    *** this clearly doesn't happen in realsnake so take a look
+        at that to see if you can figure out how to fix this. ***
+    '''
 
     if key == ord('q') or key == 27:
       break
     else:
         # SOFT DROP CURRENTLY NOT WORKING
-        if key == curses.KEY_DOWN: #double the speed of the descent
-            stdscr.timeout(750)
+        if key == curses.KEY_DOWN: 
+            stdscr.timeout(250) #speed up descent
         elif key == 32:
+            # HARD DROP ???
             for mino in tetrominoes:
                 paint_mino_yx(stdscr, mino, tetrominoes.index(mino), 13, mino[1])
         else: #basic speed of descent
