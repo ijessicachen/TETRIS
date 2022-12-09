@@ -29,6 +29,7 @@ def paint_mino(stdscr, mino, shape, key, erase=False):
         else:
           stdscr.addstr(unit[0]+1, unit[1], unit_ch, curses.color_pair(c))
           unit[0] += 1 #then change the actual value of the mino unit
+
 # Paint the tetromino for given (y, x) -based on the greatest
 #current y value
 '''
@@ -137,48 +138,48 @@ def init_colours(bg = -1):
           curses.init_pair(i+1, i, -1)
 
 def tetris(stdscr):
-  #bye bye cursor
-  curses.curs_set(0)
-  #nodelay mode
-  stdscr.nodelay(True)
-  #time of each loop? default time before refresh?
-  stdscr.timeout(500)
+    #bye bye cursor
+    curses.curs_set(0)
+    #nodelay mode
+    stdscr.nodelay(True)
+    #time of each loop? default time before refresh?
+    stdscr.timeout(500)
 
-  #colours
-  bg = -1
-  init_colours(bg)
-  
-  #floor
-  for i in range(0, 75):
-    stdscr.addch(15, 7+i, curses.ACS_HLINE, curses.color_pair(245))
-  stdscr.getch()
+    #colours
+    bg = -1
+    init_colours(bg)
+    
+    #floor
+    for i in range(0, 75):
+       stdscr.addch(15, 7+i, curses.ACS_HLINE, curses.color_pair(245))
+    stdscr.getch()
 
-  #tetrominoes
-  tetrominoes = []
-  #initial positions
-  for t in tShapes: #list in the beginning naming types of tetr…
-    index = tShapes.index(t)
-    colour = tColours[index]
-    mino = init_mino_yxs(t)
-    tetrominoes.append(mino)
-    paint_mino(stdscr, mino, tShapes.index(t), 0, erase = False)
+    #tetrominoes
+    tetrominoes = []
+    #initial positions
+    for t in tShapes: #list in the beginning naming types of tetr…
+       index = tShapes.index(t)
+       colour = tColours[index]
+       mino = init_mino_yxs(t)
+       tetrominoes.append(mino)
+       paint_mino(stdscr, mino, tShapes.index(t), 0, erase = False)
 
-  # loop for movement
-  while True:
-    key = stdscr.getch()
-    '''
-    alright, I think the problem is that the above statment kind of 
-    sets the "frames" for movement, and they are the normal speed 
-    when no key is pressed, but when something is pressed, then 
-    it will always speed up. Find a way to change that so that key
-    press will not speed it up.
-    *** this clearly doesn't happen in realsnake so take a look
-        at that to see if you can figure out how to fix this. ***
-    '''
+    # loop for movement
+    while True:
+        key = stdscr.getch()
+        '''
+        alright, I think the problem is that the above statment kind of 
+        sets the "frames" for movement, and they are the normal speed 
+        when no key is pressed, but when something is pressed, then 
+        it will always speed up. Find a way to change that so that key
+        press will not speed it up.
+        *** this clearly doesn't happen in realsnake so take a look
+            at that to see if you can figure out how to fix this. ***
+        '''
 
-    if key == ord('q') or key == 27:
-      break
-    else:
+        if key == ord('q') or key == 27:
+          break
+        #else:
         # SOFT DROP CURRENTLY NOT WORKING
         if key == curses.KEY_DOWN: 
             stdscr.timeout(250) #speed up descent
