@@ -1,9 +1,20 @@
+# ROTATION
 '''
 TO DO
 * stage 1 *
 - draw all tetrominoes 
 - rotate them with arrow keys
 - make rotation more efficient
+
+***
+CURRENTLY:
+    - make tetrominoes in all rotation positions
+      on grids
+    - from there make a way to rotate them efficiently
+    - when rotation also have an arrow on the screen 
+      pointing to the rotation stage the top row is at
+***
+
 * stage 2 *
 - below stage 1, DO NOT delete stage 1
 - draw the tetrominos falling (as
@@ -128,10 +139,45 @@ def tetris (stdscr):
         tetrominoes.append(mino)
         paint_mino(stdscr, mino, tShapes.index(t), 0, erase = False)
 
+    rotatepos(stdscr)
+
     while True:
         key = stdscr.getch()
         if key == ord('q') or key == 27:
             break
+
+#I need a better idea of what the rotation will look like
+''' hardcoded (•́⍜•̀) '''
+def rotatepos (stdscr):
+
+    #frames of reference for the rotations
+    for n in range (7, 27, 5):
+        #tetrominoes (•́⍜•̀)
+        tetrominoes = []
+        for t in tShapes:
+            index = tShapes.index(t)
+        #    colour = tColours[index]
+            mino = init_mino_yxs(t)
+            tetrominoes.append(mino)
+            paint_mino(stdscr, mino, tShapes.index(t), 0, erase = False)
+        
+        #grids
+        for i in range(32, 82, 10):   
+            sGrid = [[n, i], [n, i+2], [n, i+4],
+                     [n+1, i], [n+1, i+2], [n+1, i+4],
+                     [n+2, i], [n+2, i+2], [n+2, i+4]]
+            for unit in sGrid:
+                stdscr.addstr(unit[0], unit[1], ch)
+
+    #special case for the stick
+    for n in range (6, 26, 5):
+        i = 20
+        sGrid = [[n+0, i], [n+0, i+2], [n+0, i+4], [n+0, i+6],
+                 [n+1, i], [n+1, i+2], [n+1, i+4], [n+1, i+6],
+                 [n+2, i], [n+2, i+2], [n+2, i+4], [n+2, i+6],
+                 [n+3, i], [n+3, i+2], [n+3, i+4], [n+3, i+6]]
+        for unit in sGrid:
+            stdscr.addstr(unit[0], unit[1], ch)
 
 
 curses.wrapper(tetris)
